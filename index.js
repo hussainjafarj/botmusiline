@@ -1,76 +1,89 @@
-const express = require('express')
+require("events").EventEmitter.defaultMaxListeners = 200;
+const http = require("http");
+const express = require("express");
 const app = express();
-const port = 3000
-
-app.get('/', (req, res) => res.send('Yo boi!!'))
-
-app.listen(port, () =>
-console.log(`Your app is listening a http://localhost:${port}`)
-);
-
-const { Client, Collection } = require("discord.js");
-const { readdirSync } = require("fs");
-const { join } = require("path");
-const { TOKEN, PREFIX, LOCALE } = require("./util/EvobotUtil");
-const path = require("path");
-const i18n = require("i18n"); 
-
-const client = new Client({
-  disableMentions: "everyone",
-  restTimeOffset: 0
+app.get("/", (request, response) => {
+  response.sendStatus(200);
 });
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
 
-client.login(process.env.token);
-client.commands = new Collection();
-client.prefix = PREFIX;
-client.queue = new Map();
-const cooldowns = new Collection();
-const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-i18n.configure({
-  locales: ["ar", "de", "en", "es", "fr", "it", "ko", "nl", "pl", "pt_br", "ru", "sv", "tr", "zh_cn", "zh_tw"],
-  directory: path.join(__dirname, "locales"),
-  defaultLocale: "en",
-  objectNotation: true,
-  register: global,
-
-  logWarnFn: function (msg) {
-    console.log("warn", msg);
-  },
-
-  logErrorFn: function (msg) {
-    console.log("error", msg);
-  },
-
-  missingKeyFn: function (locale, value) {
-    return value;
-  },
-
-  mustacheConfig: {
-    tags: ["{{", "}}"],
-    disable: false
-  }
-});
-
-/**
- * Client Events
- */
+////بكجات
+const { Client, RichEmbed } = require("discord.js");
+var { Util } = require("discord.js");
+const { prefix, devs } = require("./config");
+const client = new Client({ disableEveryone: true });
+const ytdl = require("ytdl-core");
+const canvas = require("canvas");
+const convert = require("hh-mm-ss");
+const fetchVideoInfo = require("youtube-info");
+const botversion = require("./package.json").version;
+const simpleytapi = require("simple-youtube-api");
+const moment = require("moment");
+const fs = require("fs");
+const util = require("util");
+const gif = require("gif-search");
+const opus = require("node-opus");
+const ms = require("ms");
+const jimp = require("jimp");
+const { get } = require("snekfetch");
+const guild = require("guild");
+const dateFormat = require("dateformat");
+const YouTube = require("simple-youtube-api");
+const youtube = new YouTube("AIzaSyAXaeBh837k38o_lwSADet8UTO7X21DGsY"); //تعديل اساسي سوي اي بي اي جديد
+const hastebins = require("hastebin-gen");
+const getYoutubeID = require("get-youtube-id");
+const yt_api_key = "AIzaSyAXaeBh837k38o_lwSADet8UTO7X21DGsY"; ///تعديل اساسي سوي اي بي اي جديد
+const pretty = require("pretty-ms");
+client.login(process.env.TOKEN);
+const queue = new Map();
+var table = require("table").table;
+const Discord = require("discord.js");
 client.on("ready", () => {
-  console.log(`${client.user.username} ready!`);
-  client.user.setActivity(`Yivy Av.`, { type: "PLAYING" });
-  client.user.setStatus("idle");
-  let channel = client.channels.cache.find(r => r.id === "971575695560040498");//ايدي الروم
-  if(!channel)return console.log("can't find channel")
-  channel.join();
+  console.log(`Logged in as ${client.user.tag}!`);
 });
-client.on("warn", (info) => console.log(info));
-client.on("error", console.error);
 
-/**
- * Import all commands
- */
-const commandFiles = readdirSync(join(__dirname, "commands")).filter((file) => file.endsWith(".js"));
-for (const file of commandFiles) {
+//كود تغيير الحالة
+client.on("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(client.guilds.map(c => `${c.name} : ${c.me.hasPermission(8)}`));
+  client.user.setStatus("online");
+
+  client.user.setActivity(`${prefix}help`, { type: "WATCHING" });
+});
+
+///ممنوع السرقة 
+client.login("OTkwMzMyODU4ODE0MDY2NzI5.G3kkVH.FtCwkWqRd82MN2VhLlqkVU907teQ3hVNOoixek"); ///توكن هنا
+
+client.on("ready", () => {
+  client.user.setActivity(``)//غير الحالة الي تريد
+});
+
+client.on("message", async message => {
+ 
+  if (message.guild.id != "929497213674082304" ) return;
+  if (message.channel.id != "948592282242809856") return;    
+  if(message.author.id === client.user.id) return;
+      if (message.author.send) {
+    message.channel.send({files: ["https://cdn.discordapp.com/attachments/916668502109196328/948898483153293362/5cfece8f1d8d345e.png"]});
+ 
+  }
+ 
+});
+client.on('message', message => {
+  if (message.content === 'خط') {
+    message.delete();
+ message.channel.send({files: ["https://media.discordapp.net/attachments/983386931209580584/1044622350185938954/FB653D8B-87EC-4A34-A8C5-678FBE3305E0.png"]});
+
+// Code Auto Line
+client.on("message", message => {
+if(message.author.bot) return;
+if(message.channel.id == "983386833482309652") { /// اي دي روم الخط
+message.channel.send("https://media.discordapp.net/attachments/983386931209580584/1044622350185938954/FB653D8B-87EC-4A34-A8C5-678FBE3305E0.png") /// رابط الخط
+} else { return; }
+})    
   const command = require(join(__dirname, "commands", `${file}`));
   client.commands.set(command.name, command);
 }
